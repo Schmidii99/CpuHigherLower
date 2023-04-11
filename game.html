@@ -41,11 +41,17 @@
     </div>
     <div class="container">
         <div class="row mt-3">
-            <div class="col-sm border text-center p-2">
+            <div class="col-sm border text-center p-2" id="col1">
                 <span class="h2" id="currentCpuTitle"></span>
+                <br>
+                <span class="h3">cpu score:</span>
+                <span class="h3" id="currentCpuScore"></span>
             </div>
-            <div class="col-sm border text-center p-2">
+            <div class="col-sm border text-center p-2" id="col2">
                 <span class="h2" id="nextCpuTitle"></span>
+                <br>
+                <span class="h3">cpu score:</span>
+                <span class="h3" id="nextCpuScore">?</span>
                 <br>
                 <button class="btn btn-lg bg-info m-3" onclick="btnHigherClick()" id="btnHigher">Higher</button>
                 <br>
