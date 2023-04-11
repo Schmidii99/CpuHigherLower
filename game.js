@@ -7,8 +7,7 @@ async function main() {
         .then((response) => response.json())
         .then((json) => cpuList = json);
 
-    currentCpu = getRandomCpu();
-    nextCpu = getRandomCpu();
+    updateLayout();
 }
 
 function getRandomCpu() {
@@ -17,6 +16,36 @@ function getRandomCpu() {
         name: cpuList[randomIndex]["name"].split('@')[0],
         score: cpuList[randomIndex]["cpuScore"]
     }
+}
+
+function btnLowerClick() {
+    if (currentCpu.score < nextCpu.score) {
+        showResult(true);
+        return;
+    }
+    showResult(false);
+}
+
+function btnHigherClick() {
+
+}
+
+function showResult(isCorrect) {
+    if (isCorrect) {
+        document.getElementById("col2").style.backgroundColor = "lightgreen";
+    }
+    else {
+        document.getElementById("col2").style.backgroundColor = "#FF4444";
+    }
+}
+
+function updateLayout() {
+    currentCpu = getRandomCpu();
+    document.getElementById("currentCpuTitle").innerText = currentCpu.name;
+    // add "." to large numbers
+    document.getElementById("currentCpuScore").innerText = currentCpu.score.toString().length > 3 ? currentCpu.score.toString().slice(0, currentCpu.score.toString().length - 3) + "." + currentCpu.score.toString().slice(currentCpu.score.toString().length - 3) : currentCpu.score;
+    nextCpu = getRandomCpu();
+    document.getElementById("nextCpuTitle").innerText = nextCpu.name;
 }
 
 function getRandomInt(min, max) {
