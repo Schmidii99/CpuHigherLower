@@ -94,6 +94,7 @@ class Model {
 
     #currentCpu;
     #nextCpu;
+    #tookGuessOnCurrent;
 
     #score;
     #highscore;
@@ -106,6 +107,8 @@ class Model {
         this.#nextCpu = this.#getRandomCpu();
         this.#score = 0;
         this.#highscore = localStorage.getItem("highscore_cpu") ?? 0;
+
+        this.#tookGuessOnCurrent = false;
     }
 
     get highscore() {
@@ -124,8 +127,15 @@ class Model {
         return this.#nextCpu;
     }
 
+    get hasGuessed() {
+        return this.#tookGuessOnCurrent;
+    }
+
     // Can be 'higher' or 'lower'
     postAnswer(answer) {
+        if (this.#tookGuessOnCurrent) return false;
+        this.#tookGuessOnCurrent = true;
+
         let answerWasCorrect = false;
         if (answer === 'higher') {
             answerWasCorrect = this.nextCpu.score > this.#currentCpu.score;
@@ -146,6 +156,7 @@ class Model {
     nextRound() {
         this.#currentCpu = this.#nextCpu;
         this.#nextCpu = this.#getRandomCpu();
+        this.#tookGuessOnCurrent = false;
     }
 
     #getRandomCpu() {
