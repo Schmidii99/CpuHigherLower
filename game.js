@@ -19,24 +19,18 @@ function getRandomCpu() {
 }
 
 function btnLowerClick() {
-    if (currentCpu.score < nextCpu.score) {
-        showResult(true);
-        return;
-    }
-    showResult(false);
+    currentCpu.score < nextCpu.score ? showResult(true) : showResult(false);
 }
 
 function btnHigherClick() {
-
+    currentCpu.score > nextCpu.score ? showResult(true) : showResult(false);
 }
 
 function showResult(isCorrect) {
-    if (isCorrect) {
-        document.getElementById("col2").style.backgroundColor = "lightgreen";
-    }
-    else {
-        document.getElementById("col2").style.backgroundColor = "#FF4444";
-    }
+    document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
+
+    document.getElementById("nextCpuScore").innerHTML = nextCpu.score.toString();
+    countUp();
 }
 
 function updateLayout() {
@@ -46,6 +40,23 @@ function updateLayout() {
     document.getElementById("currentCpuScore").innerText = currentCpu.score.toString().length > 3 ? currentCpu.score.toString().slice(0, currentCpu.score.toString().length - 3) + "." + currentCpu.score.toString().slice(currentCpu.score.toString().length - 3) : currentCpu.score;
     nextCpu = getRandomCpu();
     document.getElementById("nextCpuTitle").innerText = nextCpu.name;
+}
+
+async function countUp() {
+    document.getElementById("btnHigher").setAttribute("disabled", "");
+    document.getElementById("btnLower").setAttribute("disabled", "");
+
+    const options = {
+        startVal: 7000,
+        separator: '.',
+        decimal: ',',
+    };
+    let counter = new CountUp('nextCpuScore', nextCpu.score, options);
+    if (!counter.error) {
+        await counter.start();
+    } else {
+        counter.error(demo.error);
+    }
 }
 
 function getRandomInt(min, max) {
