@@ -8,9 +8,9 @@ var nextCpu;
 var score;
 
 export async function main() {
-    await fetch('./data.json')
+    await (fetch('./data.json')
         .then((response) => response.json())
-        .then((json) => cpuList = json);
+        .then((json) => cpuList = json));
 
     currentCpu = getRandomCpu();
     nextCpu = getRandomCpu();
