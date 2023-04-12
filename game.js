@@ -9,6 +9,8 @@ export async function main() {
         .then((response) => response.json())
         .then((json) => cpuList = json);
 
+    currentCpu = getRandomCpu();
+    nextCpu = getRandomCpu();
     updateLayout();
 }
 
@@ -29,36 +31,55 @@ export function btnHigherClick() {
 }
 
 function showResult(isCorrect) {
+    document.getElementById("btnHigher").setAttribute("disabled", "");
+    document.getElementById("btnLower").setAttribute("disabled", "");
+
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
 
-    document.getElementById("nextCpuScore").innerHTML = nextCpu.score.toString();
     countUp();
 }
 
 function updateLayout() {
-    currentCpu = getRandomCpu();
     document.getElementById("currentCpuTitle").innerText = currentCpu.name;
     // add "." to large numbers
     document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(currentCpu.score)
-    nextCpu = getRandomCpu();
     document.getElementById("nextCpuTitle").innerText = nextCpu.name;
+    
+    document.getElementById("nextCpuScore").innerText = "?";
+
+    document.getElementById("col2").style.backgroundColor = "";
+}
+
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
 }
 
 async function countUp() {
-    document.getElementById("btnHigher").setAttribute("disabled", "");
-    document.getElementById("btnLower").setAttribute("disabled", "");
-
     const options = {
-        startVal: 0,
+        startVal: nextCpu.score / 2,
         separator: '.',
         decimal: ',',
+        duration: 2
     };
     let counter = new CountUp('nextCpuScore', nextCpu.score, options);
     if (!counter.error) {
-        await counter.start();
+        counter.start();
     } else {
         counter.error(demo.error);
     }
+
+    await delay(3000)
+    nextRound();
+
+    document.getElementById("btnHigher").removeAttribute("disabled");
+    document.getElementById("btnLower").removeAttribute("disabled");
+}
+
+function nextRound() {
+    currentCpu = nextCpu;
+    nextCpu = getRandomCpu();
+
+    updateLayout();
 }
 
 function getRandomInt(min, max) {
