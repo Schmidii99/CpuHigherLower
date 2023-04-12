@@ -76,7 +76,7 @@ function updateLayout() {
     document.getElementById("col2").style.backgroundColor = "";
 }
 
-function delay(time) {
+export function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 

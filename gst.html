@@ -49,22 +49,22 @@
             </div>
         </div>
         <div class="row align-items-center">
-            <div class="col-6 offset-3 border text-center p-2">
+            <div class="col-6 offset-3 border text-center p-2" id="mainCol">
                 <span class="h2" id="cpuName"></span>
-                <button class="btn btn-lg bg-info m-1">Desktop</button>
                 <br>
-                <button class="btn btn-lg bg-info m-1">Laptop</button>
+                <button class="btn btn-lg bg-info m-1 mt-2" id="btnDesktop" onclick="btnClick(0)">Desktop</button>
                 <br>
-                <button class="btn btn-lg bg-info m-1">Mobile/Embedded</button>
+                <button class="btn btn-lg bg-info m-1" id="btnLaptop" onclick="btnClick(1)">Laptop</button>
+                <br>
+                <button class="btn btn-lg bg-info m-1" id="btnMobile" onclick="btnClick(2)">Mobile/Embedded</button>
                 <br>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import {main, btnClick} from "./game.js"
-        window.btnHigherClick = btnHigherClick
-        window.btnLowerClick = btnLowerClick
+        import {main, btnClick} from "./gst.js"
+        window.btnClick = btnClick
         main()
     </script>
 </body>
