@@ -1,110 +1,170 @@
 import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0/countUp.min.js";
 
-var cpuList;
-var currentCpu;
-var nextCpu;
+class Ui {
+    model;
 
-// current user score
-var score;
-var highscore;
+    scoreEl;
+    highscoreEl;
+    
+    currCpuTitleEl;
+    currCpuScoreEl;
 
-function setHighscore(score) {
-    const currHighscore = localStorage.getItem("highscore_cpu")
-    if (currHighscore < score) {
-        localStorage.setItem("highscore_cpu", score)
-        highscore = score
+    nextCpuTitleEl;
+    nextCpuScoreEl;
+
+    nextCpuStyle;
+
+    btnHigher;
+    btnLower;
+
+    constructor() {
+        this.model = new Model();
+    }
+
+    async init() {
+        await this.model.init();
+
+        this.scoreEl = document.getElementById("score");
+        this.highscoreEl = document.getElementById("highscore");
+        this.currCpuTitleEl = document.getElementById("currentCpuTitle");
+        this.currCpuScoreEl = document.getElementById("currentCpuScore");
+        this.nextCpuTitleEl = document.getElementById("nextCpuTitle");
+        this.nextCpuScoreEl = document.getElementById("nextCpuScore");
+        this.nextCpuStyle = document.getElementById("nextCpuCol").style;
+
+        this.btnHigher = document.getElementById("btnHigher");
+        this.btnLower = document.getElementById("btnLower");
+        this.btnHigher.onclick = () => this.handleHigherPress();
+        this.btnLower.onclick = () => this.handleLowerPress();
+
+        this.updateUiFromModel();
+    }
+
+    handleHigherPress() {
+        let result = this.model.postAnswer('higher');
+        this.animateTransition(result);
+    }
+
+    handleLowerPress() {
+        let result = this.model.postAnswer('lower');
+        this.animateTransition(result);
+    }
+
+    updateUiFromModel() {
+        this.scoreEl.innerText = this.model.score;
+        this.highscoreEl.innerText = this.model.highscore;
+        this.currCpuTitleEl.innerText = this.model.currentCpu.name;
+        this.currCpuScoreEl.innerText = new Intl.NumberFormat().format(this.model.currentCpu.score);
+        this.nextCpuTitleEl.innerText = this.model.nextCpu.name;
+    }
+
+    async animateTransition(wasCorrect) {
+        this.updateUiFromModel();
+        this.btnHigher.setAttribute("disabled", "");
+        this.btnLower.setAttribute("disabled", "");
+        this.nextCpuStyle.backgroundColor = wasCorrect ? "lightgreen" : "#FF4444";
+
+        const options = {
+            startVal: this.model.nextCpu.score / 2,
+            separator: '.',
+            decimal: ',',
+            duration: 2
+        };
+        const counter = new CountUp(this.nextCpuScoreEl, this.model.nextCpu.score, options);
+
+        await new Promise(resolve => counter.start(resolve));
+        await this.#delay(500);
+
+        this.model.nextRound();
+        this.updateUiFromModel();
+        
+        this.nextCpuStyle.backgroundColor = '';
+        this.nextCpuScoreEl.innerText = '?';
+        this.btnHigher.removeAttribute("disabled");
+        this.btnLower.removeAttribute("disabled");
+    }
+
+    #delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+}
+
+class Model {
+    #cpuList;
+
+    #currentCpu;
+    #nextCpu;
+
+    #score;
+    #highscore;
+
+    async init() {
+        const fetchResult = await fetch("./data.json");
+        this.#cpuList = await fetchResult.json();
+
+        this.#currentCpu = this.#getRandomCpu();
+        this.#nextCpu = this.#getRandomCpu();
+        this.#score = 0;
+        this.#highscore = localStorage.getItem("highscore_cpu") ?? 0;
+    }
+
+    get highscore() {
+        return this.#highscore;
+    }
+
+    get score() {
+        return this.#score;
+    }
+
+    get currentCpu() {
+        return this.#currentCpu;
+    }
+
+    get nextCpu() {
+        return this.#nextCpu;
+    }
+
+    // Can be 'higher' or 'lower'
+    postAnswer(answer) {
+        let answerWasCorrect = false;
+        if (answer === 'higher') {
+            answerWasCorrect = this.nextCpu.score > this.#currentCpu.score;
+        } else if (answer === 'lower') {
+            answerWasCorrect = this.nextCpu.score < this.#currentCpu.score;
+        }
+
+        if (answerWasCorrect) {
+            this.#score += 1;
+            return true;
+        } else {
+            this.#updateHighscore(this.score)
+            this.#score = 0;
+            return false;
+        }
+    }
+
+    nextRound() {
+        this.#currentCpu = this.#nextCpu;
+        this.#nextCpu = this.#getRandomCpu();
+    }
+
+    #getRandomCpu() {
+        const item = this.#cpuList[Math.floor(Math.random() * this.#cpuList.length)];
+        return {
+            name: item["name"].split('@')[0],
+            score: item["cpuScore"]
+        };
+    }
+
+    #updateHighscore(newScore) {
+        if (newScore > this.#highscore) {
+            localStorage.setItem("highscore_cpu", newScore);
+            this.#highscore = newScore;
+        }
     }
 }
 
 export async function main() {
-    await fetch('./data.json')
-        .then((response) => response.json())
-        .then((json) => cpuList = json);
-
-    currentCpu = getRandomCpu();
-    nextCpu = getRandomCpu();
-    score = 0;
-    highscore = localStorage.getItem("highscore_cpu") ?? 0
-    updateLayout();
-}
-
-function getRandomCpu() {
-    let randomIndex = getRandomInt(0, cpuList.length)
-    return {
-        name: cpuList[randomIndex]["name"].split('@')[0],
-        score: cpuList[randomIndex]["cpuScore"]
-    }
-}
-
-export function btnLowerClick() {
-    nextCpu.score < currentCpu.score ? showResult(true) : showResult(false);
-}
-
-export function btnHigherClick() {
-    nextCpu.score > currentCpu.score ? showResult(true) : showResult(false);
-}
-
-function showResult(isCorrect) {
-    document.getElementById("btnHigher").setAttribute("disabled", "");
-    document.getElementById("btnLower").setAttribute("disabled", "");
-
-    document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
-    if (!isCorrect) {
-        setHighscore(score)
-    }
-    score = isCorrect ? score + 1 : 0;
-    document.getElementById("score").innerText = score;
-
-    countUp();
-}
-
-// updates view based on the cpu objects
-function updateLayout() {
-    document.getElementById("highscore").innerText = highscore;
-    document.getElementById("currentCpuTitle").innerText = currentCpu.name;
-    // add "." to large numbers
-    document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(currentCpu.score)
-    document.getElementById("nextCpuTitle").innerText = nextCpu.name;
-    
-    document.getElementById("nextCpuScore").innerText = "?";
-
-    document.getElementById("col2").style.backgroundColor = "";
-}
-
-function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-}
-
-async function countUp() {
-    const options = {
-        startVal: nextCpu.score / 2,
-        separator: '.',
-        decimal: ',',
-        duration: 2
-    };
-    let counter = new CountUp('nextCpuScore', nextCpu.score, options);
-    if (!counter.error) {
-        counter.start();
-    } else {
-        counter.error(demo.error);
-    }
-
-    await delay(2500)
-    nextRound();
-
-    document.getElementById("btnHigher").removeAttribute("disabled");
-    document.getElementById("btnLower").removeAttribute("disabled");
-}
-
-function nextRound() {
-    currentCpu = nextCpu;
-    nextCpu = getRandomCpu();
-
-    updateLayout();
-}
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+    const ui = new Ui();
+    ui.init()
 }

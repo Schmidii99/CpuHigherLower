@@ -45,21 +45,21 @@
             </div>
         </div>
         <div class="row mt-3">
-            <div class="col-sm border text-center p-2" id="col1">
+            <div class="col-sm border text-center p-2" id="currCpuCol">
                 <span class="h2" id="currentCpuTitle"></span>
                 <br>
                 <span class="h3">cpu score:</span>
                 <span class="h3" id="currentCpuScore" style="color: blue;"></span>
             </div>
-            <div class="col-sm border text-center p-2" id="col2">
+            <div class="col-sm border text-center p-2" id="nextCpuCol">
                 <span class="h2" id="nextCpuTitle"></span>
                 <br>
                 <span class="h3">cpu score:</span>
                 <span class="h3 counter-count" id="nextCpuScore" style="color: blue;">?</span>
                 <br>
-                <button class="btn btn-lg bg-info m-3" onclick="btnHigherClick()" id="btnHigher">Higher</button>
+                <button class="btn btn-lg bg-info m-3" id="btnHigher">Higher</button>
                 <br>
-                <button class="btn btn-lg bg-info mb-3" onclick="btnLowerClick()" id="btnLower">Lower</button>
+                <button class="btn btn-lg bg-info mb-3" id="btnLower">Lower</button>
             </div>
         </div>
     </div>
@@ -69,10 +69,8 @@
     </div> -->
 
     
-    <script type="module">
-        import {main, btnHigherClick, btnLowerClick} from "./game.js"
-        window.btnHigherClick = btnHigherClick
-        window.btnLowerClick = btnLowerClick
+    <script defer type="module">
+        import { main } from "./game.js"
         main()
     </script>
 </body>
