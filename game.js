@@ -6,13 +6,13 @@ var nextCpu;
 
 // current user score
 var score;
-var highscore;
+var highScore;
 
-function setHighscore(score) {
-    const currHighscore = localStorage.getItem("highscore_cpu")
-    if (currHighscore < score) {
-        localStorage.setItem("highscore_cpu", score)
-        highscore = score
+function setHighScore(score) {
+    const currHighScore = localStorage.getItem("highScore_cpu")
+    if (currHighScore < score) {
+        localStorage.setItem("highScore_cpu", score)
+        highScore = score
     }
 }
 
@@ -24,7 +24,7 @@ export async function main() {
     currentCpu = getRandomCpu();
     nextCpu = getRandomCpu();
     score = 0;
-    highscore = localStorage.getItem("highscore_cpu") ?? 0
+    highScore = localStorage.getItem("highScore_cpu") ?? 0
     updateLayout();
 }
 
@@ -50,7 +50,7 @@ function showResult(isCorrect) {
 
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
     if (!isCorrect) {
-        setHighscore(score)
+        setHighScore(score)
     }
     score = isCorrect ? score + 1 : 0;
     if (score > highScore) {
@@ -64,7 +64,8 @@ function showResult(isCorrect) {
 
 // updates view based on the cpu objects
 function updateLayout() {
-    document.getElementById("highscore").innerText = highscore;
+    document.getElementById("highScore").innerText = highScore;
+
     document.getElementById("currentCpuTitle").innerText = currentCpu.name;
     // add "." to large numbers
     document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(currentCpu.score)
