@@ -1,87 +1,87 @@
 import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0/countUp.min.js";
 
 class Ui {
-    model;
+    #model;
 
-    scoreEl;
-    highscoreEl;
+    #scoreEl;
+    #highscoreEl;
     
-    currCpuTitleEl;
-    currCpuScoreEl;
+    #currCpuTitleEl;
+    #currCpuScoreEl;
 
-    nextCpuTitleEl;
-    nextCpuScoreEl;
+    #nextCpuTitleEl;
+    #nextCpuScoreEl;
 
-    nextCpuStyle;
+    #nextCpuStyle;
 
-    btnHigher;
-    btnLower;
+    #btnHigher;
+    #btnLower;
 
     constructor() {
-        this.model = new Model();
+        this.#model = new Model();
     }
 
     async init() {
-        await this.model.init();
+        await this.#model.init();
 
-        this.scoreEl = document.getElementById("score");
-        this.highscoreEl = document.getElementById("highscore");
-        this.currCpuTitleEl = document.getElementById("currentCpuTitle");
-        this.currCpuScoreEl = document.getElementById("currentCpuScore");
-        this.nextCpuTitleEl = document.getElementById("nextCpuTitle");
-        this.nextCpuScoreEl = document.getElementById("nextCpuScore");
-        this.nextCpuStyle = document.getElementById("nextCpuCol").style;
+        this.#scoreEl = document.getElementById("score");
+        this.#highscoreEl = document.getElementById("highscore");
+        this.#currCpuTitleEl = document.getElementById("currentCpuTitle");
+        this.#currCpuScoreEl = document.getElementById("currentCpuScore");
+        this.#nextCpuTitleEl = document.getElementById("nextCpuTitle");
+        this.#nextCpuScoreEl = document.getElementById("nextCpuScore");
+        this.#nextCpuStyle = document.getElementById("nextCpuCol").style;
 
-        this.btnHigher = document.getElementById("btnHigher");
-        this.btnLower = document.getElementById("btnLower");
-        this.btnHigher.onclick = () => this.handleHigherPress();
-        this.btnLower.onclick = () => this.handleLowerPress();
+        this.#btnHigher = document.getElementById("btnHigher");
+        this.#btnLower = document.getElementById("btnLower");
+        this.#btnHigher.onclick = () => this.handleHigherPress();
+        this.#btnLower.onclick = () => this.handleLowerPress();
 
         this.updateUiFromModel();
     }
 
-    handleHigherPress() {
-        let result = this.model.postAnswer('higher');
-        this.animateTransition(result);
+    async handleHigherPress() {
+        let result = this.#model.postAnswer('higher');
+        await this.animateTransition(result);
     }
 
-    handleLowerPress() {
-        let result = this.model.postAnswer('lower');
-        this.animateTransition(result);
+    async handleLowerPress() {
+        let result = this.#model.postAnswer('lower');
+        await this.animateTransition(result);
     }
 
     updateUiFromModel() {
-        this.scoreEl.innerText = this.model.score;
-        this.highscoreEl.innerText = this.model.highscore;
-        this.currCpuTitleEl.innerText = this.model.currentCpu.name;
-        this.currCpuScoreEl.innerText = new Intl.NumberFormat().format(this.model.currentCpu.score);
-        this.nextCpuTitleEl.innerText = this.model.nextCpu.name;
+        this.#scoreEl.innerText = this.#model.score;
+        this.#highscoreEl.innerText = this.#model.highscore;
+        this.#currCpuTitleEl.innerText = this.#model.currentCpu.name;
+        this.#currCpuScoreEl.innerText = new Intl.NumberFormat().format(this.#model.currentCpu.score);
+        this.#nextCpuTitleEl.innerText = this.#model.nextCpu.name;
     }
 
     async animateTransition(wasCorrect) {
         this.updateUiFromModel();
-        this.btnHigher.setAttribute("disabled", "");
-        this.btnLower.setAttribute("disabled", "");
-        this.nextCpuStyle.backgroundColor = wasCorrect ? "lightgreen" : "#FF4444";
+        this.#btnHigher.setAttribute("disabled", "");
+        this.#btnLower.setAttribute("disabled", "");
+        this.#nextCpuStyle.backgroundColor = wasCorrect ? "lightgreen" : "#FF4444";
 
         const options = {
-            startVal: this.model.nextCpu.score / 2,
+            startVal: this.#model.nextCpu.score / 2,
             separator: '.',
             decimal: ',',
             duration: 2
         };
-        const counter = new CountUp(this.nextCpuScoreEl, this.model.nextCpu.score, options);
+        const counter = new CountUp(this.#nextCpuScoreEl, this.#model.nextCpu.score, options);
 
         await new Promise(resolve => counter.start(resolve));
         await this.#delay(500);
 
-        this.model.nextRound();
+        this.#model.nextRound();
         this.updateUiFromModel();
         
-        this.nextCpuStyle.backgroundColor = '';
-        this.nextCpuScoreEl.innerText = '?';
-        this.btnHigher.removeAttribute("disabled");
-        this.btnLower.removeAttribute("disabled");
+        this.#nextCpuStyle.backgroundColor = '';
+        this.#nextCpuScoreEl.innerText = '?';
+        this.#btnHigher.removeAttribute("disabled");
+        this.#btnLower.removeAttribute("disabled");
     }
 
     #delay(time) {
@@ -166,5 +166,5 @@ class Model {
 
 export async function main() {
     const ui = new Ui();
-    ui.init()
+    await ui.init()
 }
