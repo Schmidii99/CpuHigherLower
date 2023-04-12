@@ -6,6 +6,7 @@ var nextCpu;
 
 // current user score
 var score;
+var highScore;
 
 export async function main() {
     await (fetch('./data.json')
@@ -15,6 +16,7 @@ export async function main() {
     currentCpu = getRandomCpu();
     nextCpu = getRandomCpu();
     score = 0;
+    highScore = 0;
     updateLayout();
 }
 
@@ -40,6 +42,10 @@ function showResult(isCorrect) {
 
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
     score = isCorrect ? score + 1 : 0;
+    if (score > highScore) {
+        highScore = score;
+        document.getElementById("highScore").innerText = highScore;
+    }
     document.getElementById("score").innerText = score;
 
     countUp();
