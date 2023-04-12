@@ -1,17 +1,34 @@
 var cpuList;
-async function main() {
-    await fetch('./data.json')
-        .then((response) => response.json())
-        .then((json) => cpuList = json);
+var currentCpu;
 
-    console.log(getRandomCpu().name)
+var score;
+var highScore;
+
+async function main() {
+    // init cpu list
+    await (fetch('./data.json')
+        .then((response) => response.json())
+        .then((json) => cpuList = json));
+
+    nextRound();
+}
+
+function nextRound() {
+    currentCpu = getRandomCpu();
+
+    document.getElementById("cpuName").innerText = currentCpu.name;
 }
 
 function getRandomCpu() {
-    let randomIndex = getRandomInt(0, cpuList.length)
+    let randomIndex;
+    do {
+        randomIndex = getRandomInt(0, cpuList.length)
+    } while (typeof(cpuList[randomIndex]["type"]) == null)
+    
+    
     return {
         name: cpuList[randomIndex]["name"].split('@')[0],
-        score: cpuList[randomIndex]["cpuScore"]
+        type: cpuList[randomIndex]["type"]
     }
 }
 
