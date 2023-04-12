@@ -4,6 +4,9 @@ var cpuList;
 var currentCpu;
 var nextCpu;
 
+// current user score
+var score;
+
 export async function main() {
     await fetch('./data.json')
         .then((response) => response.json())
@@ -11,6 +14,7 @@ export async function main() {
 
     currentCpu = getRandomCpu();
     nextCpu = getRandomCpu();
+    score = 0;
     updateLayout();
 }
 
@@ -35,10 +39,13 @@ function showResult(isCorrect) {
     document.getElementById("btnLower").setAttribute("disabled", "");
 
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
+    score = isCorrect ? score + 1 : 0;
+    document.getElementById("score").innerText = score;
 
     countUp();
 }
 
+// updates view based on the cpu objects
 function updateLayout() {
     document.getElementById("currentCpuTitle").innerText = currentCpu.name;
     // add "." to large numbers
@@ -68,7 +75,7 @@ async function countUp() {
         counter.error(demo.error);
     }
 
-    await delay(3000)
+    await delay(2500)
     nextRound();
 
     document.getElementById("btnHigher").removeAttribute("disabled");
