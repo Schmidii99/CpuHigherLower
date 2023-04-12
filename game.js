@@ -6,7 +6,15 @@ var nextCpu;
 
 // current user score
 var score;
-var highScore;
+var highscore;
+
+function setHighscore(score) {
+    const currHighscore = localStorage.getItem("highscore_cpu")
+    if (currHighscore < score) {
+        localStorage.setItem("highscore_cpu", score)
+        highscore = score
+    }
+}
 
 export async function main() {
     await (fetch('./data.json')
@@ -16,7 +24,7 @@ export async function main() {
     currentCpu = getRandomCpu();
     nextCpu = getRandomCpu();
     score = 0;
-    highScore = 0;
+    highscore = localStorage.getItem("highscore_cpu") ?? 0
     updateLayout();
 }
 
@@ -41,6 +49,9 @@ function showResult(isCorrect) {
     document.getElementById("btnLower").setAttribute("disabled", "");
 
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
+    if (!isCorrect) {
+        setHighscore(score)
+    }
     score = isCorrect ? score + 1 : 0;
     if (score > highScore) {
         highScore = score;
@@ -53,6 +64,7 @@ function showResult(isCorrect) {
 
 // updates view based on the cpu objects
 function updateLayout() {
+    document.getElementById("highscore").innerText = highscore;
     document.getElementById("currentCpuTitle").innerText = currentCpu.name;
     // add "." to large numbers
     document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(currentCpu.score)
