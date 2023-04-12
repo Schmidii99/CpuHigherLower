@@ -39,7 +39,7 @@ function updateLayout() {
     currentCpu = getRandomCpu();
     document.getElementById("currentCpuTitle").innerText = currentCpu.name;
     // add "." to large numbers
-    document.getElementById("currentCpuScore").innerText = currentCpu.score.toString().length > 3 ? currentCpu.score.toString().slice(0, currentCpu.score.toString().length - 3) + "." + currentCpu.score.toString().slice(currentCpu.score.toString().length - 3) : currentCpu.score;
+    document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(currentCpu.score)
     nextCpu = getRandomCpu();
     document.getElementById("nextCpuTitle").innerText = nextCpu.name;
 }
