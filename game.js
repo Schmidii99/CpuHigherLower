@@ -21,11 +21,11 @@ function getRandomCpu() {
 }
 
 export function btnLowerClick() {
-    currentCpu.score < nextCpu.score ? showResult(true) : showResult(false);
+    nextCpu.score < currentCpu.score ? showResult(true) : showResult(false);
 }
 
 export function btnHigherClick() {
-    currentCpu.score > nextCpu.score ? showResult(true) : showResult(false);
+    nextCpu.score > currentCpu.score ? showResult(true) : showResult(false);
 }
 
 function showResult(isCorrect) {
@@ -49,7 +49,7 @@ async function countUp() {
     document.getElementById("btnLower").setAttribute("disabled", "");
 
     const options = {
-        startVal: 7000,
+        startVal: 0,
         separator: '.',
         decimal: ',',
     };
