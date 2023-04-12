@@ -1,4 +1,4 @@
-import { CountUp } from "./node_modules/countup.js/dist/countUp.min.js";
+import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0/countUp.min.js";
 
 var cpuList;
 var currentCpu;
