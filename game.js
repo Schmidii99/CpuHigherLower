@@ -1,3 +1,5 @@
+import { CountUp } from "./node_modules/countup.js/dist/countUp.min.js";
+
 var cpuList;
 var currentCpu;
 var nextCpu;
@@ -18,11 +20,11 @@ function getRandomCpu() {
     }
 }
 
-function btnLowerClick() {
+export function btnLowerClick() {
     currentCpu.score < nextCpu.score ? showResult(true) : showResult(false);
 }
 
-function btnHigherClick() {
+export function btnHigherClick() {
     currentCpu.score > nextCpu.score ? showResult(true) : showResult(false);
 }
 
