@@ -10,6 +10,10 @@ export async function main() {
         .then((response) => response.json())
         .then((json) => cpuList = json));
 
+    highScore = localStorage.getItem("highScore_socket") ?? 0
+    score = 0;
+    updateScores();
+
     nextRound();
 }
 
@@ -83,7 +87,20 @@ export async function btnClick(typ) {
         btnServer.style.backgroundColor = "lightgreen";
     }
 
-    await delay(2000);
+    // Score
+    if (btns[typ].style.backgroundColor == "lightgreen") {
+        score++;
+    } else {
+        score = 0;
+    }
+    // Highscore
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem("highScore_socket", highScore);
+    }
+    updateScores();
+
+    await delay(1000);
 
     btns.forEach( (el) => {
         el.style.backgroundColor = "#3CC3FA";
@@ -91,6 +108,11 @@ export async function btnClick(typ) {
     })
 
     nextRound();
+}
+
+function updateScores() {
+    document.getElementById("score").innerText = score;
+    document.getElementById("highScore").innerText = highScore;
 }
 
 function getRandomInt(min, max) {
