@@ -42,17 +42,14 @@ export async function btnClick(typ) {
     // 0 -> Desktop
     // 1 -> Laptop
     // 2 -> Mobile/Embedded
-    // remove bootstrap class
+
+    console.log("Button clicked: typ: " + typ + "cpu type: " + currentCpu.type);
 
     let btnDesktop =  document.getElementById("btnDesktop");
     let btnLaptop =  document.getElementById("btnLaptop");
     let btnMobile =  document.getElementById("btnMobile");
 
-    let btns = [btnDesktop, btnLaptop, btnLaptop];
-
-    btns.forEach( (el) => {
-        el.className = el.className.replace("bg-info", "");
-    })
+    let btns = [btnDesktop, btnLaptop, btnMobile];
 
     switch (typ) {
         case 0:
@@ -65,7 +62,6 @@ export async function btnClick(typ) {
             btnMobile.style.backgroundColor = "#FF4444";
             break;
     }
-    // make correct button green and wrong button red!!!! bg-success | bg-danger
 
     switch (currentCpu.type) {
         case "Desktop":
@@ -82,8 +78,7 @@ export async function btnClick(typ) {
     await delay(2000);
 
     btns.forEach( (el) => {
-        el.className = el.className + " bg-info";
-        el.style.backgroundColor = "";
+        el.style.backgroundColor = "#3CC3FA";
     })
 
     nextRound();
