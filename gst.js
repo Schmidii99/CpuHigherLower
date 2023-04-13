@@ -34,7 +34,9 @@ function getRandomCpu() {
     }
 }
 
-import { delay } from "./game";
+function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
 
 export async function btnClick(typ) {
     // 0 -> Desktop
