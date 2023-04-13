@@ -42,14 +42,14 @@ export async function btnClick(typ) {
     // 0 -> Desktop
     // 1 -> Laptop
     // 2 -> Mobile/Embedded
-
-    console.log("Button clicked: typ: " + typ + "cpu type: " + currentCpu.type);
+    // 3 -> Server
 
     let btnDesktop =  document.getElementById("btnDesktop");
     let btnLaptop =  document.getElementById("btnLaptop");
     let btnMobile =  document.getElementById("btnMobile");
+    let btnServer =  document.getElementById("btnServer");
 
-    let btns = [btnDesktop, btnLaptop, btnMobile];
+    let btns = [btnDesktop, btnLaptop, btnMobile, btnServer];
 
     switch (typ) {
         case 0:
@@ -60,6 +60,9 @@ export async function btnClick(typ) {
             break;
         case 2:
             btnMobile.style.backgroundColor = "#FF4444";
+            break;
+        case 3:
+            btnServer.style.backgroundColor = "#FF4444";
             break;
     }
 
@@ -72,6 +75,9 @@ export async function btnClick(typ) {
             break;
         case "Mobile/Embedded":
             btnMobile.style.backgroundColor = "lightgreen";
+            break;
+        case "Server":
+            btnServer.style.backgroundColor = "lightgreen";
             break;
     }
 
