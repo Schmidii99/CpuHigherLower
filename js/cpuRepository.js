@@ -1,4 +1,4 @@
-class CpuRepository {
+export class CpuRepository {
     #cpuList;
 
     #currentCPU;
