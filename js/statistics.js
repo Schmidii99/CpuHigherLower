@@ -21,6 +21,10 @@ export class Stats {
         }
     }
 
+    resetScore() {
+        this.#score = 0;
+    }
+
     get highScore() {
         return this.#highScore;
     }

@@ -8,7 +8,7 @@ var nextCpu;
 var localStats;
 
 export async function main() {
-    localStats = new Stats();
+    localStats = new Stats("highScore_cpu");
 
     await (fetch('./js/data.json')
         .then((response) => response.json())
@@ -42,7 +42,7 @@ function showResult(isCorrect) {
 
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
     
-    void(isCorrect && (localStats.incrementScore()))
+    isCorrect ? localStats.incrementScore() : localStats.resetScore();
     
     document.getElementById("highScore").innerText = localStats.highScore;
     document.getElementById("score").innerText = localStats.score;
