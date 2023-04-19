@@ -1,4 +1,4 @@
-class Stats {
+export class Stats {
     #score;
     #highScore;
     #highScoreStorageKey;
@@ -19,5 +19,13 @@ class Stats {
             this.#highScore = this.#score;
             localStorage.setItem(this.#highScoreStorageKey, this.#highScore);
         }
+    }
+
+    get highScore() {
+        return this.#highScore;
+    }
+
+    get score() {
+        return this.#score;
     }
 }
