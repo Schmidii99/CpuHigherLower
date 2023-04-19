@@ -21,15 +21,14 @@ export class CpuRepository {
     }
 
     getRandomCpu() {
-        let randomIndex = this.getRandomInt(0, this.#cpuList.length);
+        let randomIndex = this.#getRandomInt(0, this.#cpuList.length);
         this.#cpuList[randomIndex]["name"] = this.#cpuList[randomIndex]["name"].split('@')[0];
         return this.#cpuList[randomIndex];
     }
 
-    getRandomInt(min, max) {
+    #getRandomInt(min, max) {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
     }
-    
 }
