@@ -1,14 +1,19 @@
 import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0/countUp.min.js";
 import { Stats } from "./statistics.js";
+import { CpuRepository } from "./cpuRepository.js"
 
 var cpuList;
 var currentCpu;
 var nextCpu;
 
+var repo;
 var localStats;
 
 export async function main() {
     localStats = new Stats("highScore_cpu");
+    
+    repo = new CpuRepository();
+    await repo.init();
 
     await (fetch('./js/data.json')
         .then((response) => response.json())
