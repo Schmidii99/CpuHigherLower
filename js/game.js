@@ -1,30 +1,22 @@
 import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0/countUp.min.js";
+import { Stats } from "./statistics.js";
 
 var cpuList;
 var currentCpu;
 var nextCpu;
 
-// current user score
-var score;
-var highScore;
-
-function setHighScore(score) {
-    const currHighScore = localStorage.getItem("highScore_cpu")
-    if (currHighScore < score) {
-        localStorage.setItem("highScore_cpu", score)
-        highScore = score
-    }
-}
+var localStats;
 
 export async function main() {
-    await (fetch('./data.json')
+    localStats = new Stats();
+
+    await (fetch('./js/data.json')
         .then((response) => response.json())
         .then((json) => cpuList = json));
 
     currentCpu = getRandomCpu();
     nextCpu = getRandomCpu();
-    score = 0;
-    highScore = localStorage.getItem("highScore_cpu") ?? 0
+    
     updateLayout();
 }
 
@@ -49,22 +41,18 @@ function showResult(isCorrect) {
     document.getElementById("btnLower").setAttribute("disabled", "");
 
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
-    if (!isCorrect) {
-        setHighScore(score)
-    }
-    score = isCorrect ? score + 1 : 0;
-    if (score > highScore) {
-        highScore = score;
-        document.getElementById("highScore").innerText = highScore;
-    }
-    document.getElementById("score").innerText = score;
+    
+    void(isCorrect && (localStats.incrementScore()))
+    
+    document.getElementById("highScore").innerText = localStats.highScore;
+    document.getElementById("score").innerText = localStats.score;
 
     countUp();
 }
 
 // updates view based on the cpu objects
 function updateLayout() {
-    document.getElementById("highScore").innerText = highScore;
+    document.getElementById("highScore").innerText = localStats.highScore;;
 
     document.getElementById("currentCpuTitle").innerText = currentCpu.name;
     // add "." to large numbers
