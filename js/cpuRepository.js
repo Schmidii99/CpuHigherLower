@@ -1,4 +1,4 @@
-class cpuRepository {
+class CpuRepository {
     #cpuList;
 
     #currentCPU;
