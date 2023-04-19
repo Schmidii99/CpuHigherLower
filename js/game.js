@@ -79,7 +79,7 @@ async function countUp() {
     if (!counter.error) {
         counter.start();
     } else {
-        counter.error(demo.error);
+        console.log(counter.error);
     }
 
     await delay(2500)
