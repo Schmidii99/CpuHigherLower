@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "outDir": "./js",
+      "allowJs": true,
+      "target": "ES2017",
+      "lib": ["es2018", "dom"],
+    },
+    "include": ["./src/**/*"]
+}
+  
