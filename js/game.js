@@ -2,52 +2,36 @@
 import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0/countUp.min.js";
 import { Stats } from "./statistics.js";
 import { CpuRepository } from "./cpuRepository.js";
-let cpuList;
-let currentCpu;
-let nextCpu;
 var repo;
 var localStats;
 export async function main() {
     localStats = new Stats("highScore_cpu");
     repo = new CpuRepository();
     await repo.init();
-    await (fetch('./js/data.json')
-        .then((response) => response.json())
-        .then((json) => cpuList = json));
-    currentCpu = getRandomCpu();
-    nextCpu = getRandomCpu();
     updateLayout();
 }
-function getRandomCpu() {
-    let randomIndex = getRandomInt(0, cpuList.length);
-    return {
-        name: cpuList[randomIndex]["name"].split('@')[0],
-        score: cpuList[randomIndex]["cpuScore"]
-    };
-}
 export function btnLowerClick() {
-    nextCpu.score < currentCpu.score ? showResult(true) : showResult(false);
+    repo.nextCpu.cpuScore < repo.currentCpu.cpuScore ? showResult(true) : showResult(false);
 }
 export function btnHigherClick() {
-    nextCpu.score > currentCpu.score ? showResult(true) : showResult(false);
+    repo.nextCpu.cpuScore > repo.currentCpu.cpuScore ? showResult(true) : showResult(false);
 }
 function showResult(isCorrect) {
     document.getElementById("btnHigher").setAttribute("disabled", "");
     document.getElementById("btnLower").setAttribute("disabled", "");
     document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
     isCorrect ? localStats.incrementScore() : localStats.resetScore();
-    document.getElementById("highScore").innerText = localStats.highScore;
-    document.getElementById("score").innerText = localStats.score;
+    document.getElementById("highScore").innerText = localStats.highScore.toString();
+    document.getElementById("score").innerText = localStats.score.toString();
     countUp();
 }
 // updates view based on the cpu objects
 function updateLayout() {
-    document.getElementById("highScore").innerText = localStats.highScore;
-    ;
-    document.getElementById("currentCpuTitle").innerText = currentCpu.name;
+    document.getElementById("highScore").innerText = localStats.highScore.toString();
+    document.getElementById("currentCpuTitle").innerText = repo.currentCpu.name;
     // add "." to large numbers
-    document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(currentCpu.score);
-    document.getElementById("nextCpuTitle").innerText = nextCpu.name;
+    document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(repo.currentCpu.cpuScore);
+    document.getElementById("nextCpuTitle").innerText = repo.nextCpu.name;
     document.getElementById("nextCpuScore").innerText = "?";
     document.getElementById("col2").style.backgroundColor = "";
 }
@@ -56,12 +40,12 @@ function delay(time) {
 }
 async function countUp() {
     const options = {
-        startVal: nextCpu.score / 2,
+        startVal: repo.nextCpu.cpuScore / 2,
         separator: '.',
         decimal: ',',
         duration: 2
     };
-    let counter = new CountUp('nextCpuScore', nextCpu.score, options);
+    let counter = new CountUp('nextCpuScore', repo.nextCpu.cpuScore, options);
     if (!counter.error) {
         counter.start();
     }
@@ -74,12 +58,6 @@ async function countUp() {
     document.getElementById("btnLower").removeAttribute("disabled");
 }
 function nextRound() {
-    currentCpu = nextCpu;
-    nextCpu = getRandomCpu();
+    repo.nextRound();
     updateLayout();
-}
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
 }

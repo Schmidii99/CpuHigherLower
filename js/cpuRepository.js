@@ -30,9 +30,16 @@ export class CpuRepository {
         return __classPrivateFieldGet(this, _CpuRepository_nextCPU, "f");
     }
     getRandomCpu() {
-        let randomIndex = __classPrivateFieldGet(this, _CpuRepository_instances, "m", _CpuRepository_getRandomInt).call(this, 0, __classPrivateFieldGet(this, _CpuRepository_cpuList, "f").length);
+        let randomIndex;
+        do {
+            randomIndex = __classPrivateFieldGet(this, _CpuRepository_instances, "m", _CpuRepository_getRandomInt).call(this, 0, __classPrivateFieldGet(this, _CpuRepository_cpuList, "f").length);
+        } while (__classPrivateFieldGet(this, _CpuRepository_cpuList, "f")[randomIndex]["value"] == null || __classPrivateFieldGet(this, _CpuRepository_cpuList, "f")[randomIndex]["type"] == null);
         __classPrivateFieldGet(this, _CpuRepository_cpuList, "f")[randomIndex]["name"] = __classPrivateFieldGet(this, _CpuRepository_cpuList, "f")[randomIndex]["name"].split('@')[0];
         return __classPrivateFieldGet(this, _CpuRepository_cpuList, "f")[randomIndex];
+    }
+    nextRound() {
+        __classPrivateFieldSet(this, _CpuRepository_currentCPU, __classPrivateFieldGet(this, _CpuRepository_nextCPU, "f"), "f");
+        __classPrivateFieldSet(this, _CpuRepository_nextCPU, this.getRandomCpu(), "f");
     }
 }
 _CpuRepository_cpuList = new WeakMap(), _CpuRepository_currentCPU = new WeakMap(), _CpuRepository_nextCPU = new WeakMap(), _CpuRepository_instances = new WeakSet(), _CpuRepository_getRandomInt = function _CpuRepository_getRandomInt(min, max) {

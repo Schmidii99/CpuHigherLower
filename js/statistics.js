@@ -12,20 +12,20 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var _Stats_score, _Stats_highScore, _Stats_highScoreStorageKey;
 export class Stats {
     constructor(highScoreStorageKey) {
-        // used as key for localStorage
         var _a;
         _Stats_score.set(this, void 0);
         _Stats_highScore.set(this, void 0);
         _Stats_highScoreStorageKey.set(this, void 0);
+        // used as key for localStorage
         __classPrivateFieldSet(this, _Stats_highScoreStorageKey, highScoreStorageKey, "f");
         __classPrivateFieldSet(this, _Stats_score, 0, "f");
-        __classPrivateFieldSet(this, _Stats_highScore, (_a = localStorage.getItem(__classPrivateFieldGet(this, _Stats_highScoreStorageKey, "f"))) !== null && _a !== void 0 ? _a : 0, "f");
+        __classPrivateFieldSet(this, _Stats_highScore, (_a = Number(localStorage.getItem(__classPrivateFieldGet(this, _Stats_highScoreStorageKey, "f")))) !== null && _a !== void 0 ? _a : 0, "f");
     }
     incrementScore(value = 1) {
         __classPrivateFieldSet(this, _Stats_score, __classPrivateFieldGet(this, _Stats_score, "f") + value, "f");
         if (__classPrivateFieldGet(this, _Stats_highScore, "f") < __classPrivateFieldGet(this, _Stats_score, "f")) {
             __classPrivateFieldSet(this, _Stats_highScore, __classPrivateFieldGet(this, _Stats_score, "f"), "f");
-            localStorage.setItem(__classPrivateFieldGet(this, _Stats_highScoreStorageKey, "f"), __classPrivateFieldGet(this, _Stats_highScore, "f"));
+            localStorage.setItem(__classPrivateFieldGet(this, _Stats_highScoreStorageKey, "f"), __classPrivateFieldGet(this, _Stats_highScore, "f").toString());
         }
     }
     resetScore() {
