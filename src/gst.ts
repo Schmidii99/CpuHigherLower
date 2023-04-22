@@ -1,8 +1,9 @@
+import { Stats } from "./statistics.js";
+
 var cpuList;
 var currentCpu;
 
-var score;
-var highScore;
+var stats: Stats;
 
 export async function main() {
     // init cpu list
@@ -10,8 +11,8 @@ export async function main() {
         .then((response) => response.json())
         .then((json) => cpuList = json));
 
-    highScore = localStorage.getItem("highScore_socket") ?? 0
-    score = 0;
+    stats = new Stats("highScore_socket");
+
     updateScores();
 
     nextRound();
@@ -89,14 +90,9 @@ export async function btnClick(typ) {
 
     // Score
     if (btns[typ].style.backgroundColor == "lightgreen") {
-        score++;
+        stats.incrementScore();
     } else {
-        score = 0;
-    }
-    // Highscore
-    if (score > highScore) {
-        highScore = score;
-        localStorage.setItem("highScore_socket", highScore);
+        stats.resetScore();
     }
     updateScores();
 
@@ -111,8 +107,8 @@ export async function btnClick(typ) {
 }
 
 function updateScores() {
-    document.getElementById("score").innerText = score;
-    document.getElementById("highScore").innerText = highScore;
+    document.getElementById("score").innerText = stats.score.toString();
+    document.getElementById("highScore").innerText = stats.highScore.toString();
 }
 
 function getRandomInt(min, max) {
