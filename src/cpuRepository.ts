@@ -8,8 +8,7 @@ export class CpuRepository {
         const fetchResult = await fetch("../data.json");
         this.#cpuList = await fetchResult.json();
 
-        this.#currentCPU = this.getRandomCpu();
-        this.#nextCPU = this.getRandomCpu();
+        this.reset();
     }
 
     get currentCpu() {
@@ -37,6 +36,11 @@ export class CpuRepository {
 
     nextRound(): void {
         this.#currentCPU = this.#nextCPU
+        this.#nextCPU = this.getRandomCpu();
+    }
+
+    reset(): void {
+        this.#currentCPU = this.getRandomCpu();
         this.#nextCPU = this.getRandomCpu();
     }
 }
