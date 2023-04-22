@@ -5,7 +5,7 @@ export class CpuRepository {
     #nextCPU;
 
     async init() {
-        const fetchResult = await fetch("./js/data.json");
+        const fetchResult = await fetch("../data.json");
         this.#cpuList = await fetchResult.json();
 
         this.#currentCPU = this.getRandomCpu();
