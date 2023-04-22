@@ -3,81 +3,166 @@ import { CountUp } from "https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.6.0
 import { Stats } from "./statistics.js";
 import { CpuRepository } from "./cpuRepository.js"
 
-var repo: CpuRepository;
-var localStats: Stats;
+class UI {
+    #model: ViewModel;
 
-export async function main() {
-    localStats = new Stats("highScore_cpu");
+    #btnLower: HTMLElement;
+    #btnHigher: HTMLElement;
+    #btnScore: HTMLElement;
+    #btnHighScore: HTMLElement;
+
+    #curCpuTitle: HTMLElement;
+    #curCpuScore: HTMLElement;
+    #nextCpuTitle: HTMLElement;
+    #nextCpuScore: HTMLElement;
+
+    #background: HTMLElement;
     
-    repo = new CpuRepository();
-    await repo.init();
-    
-    updateLayout();
-}
-
-export function btnLowerClick() {
-    repo.nextCpu.cpuScore < repo.currentCpu.cpuScore ? showResult(true) : showResult(false);
-}
-
-export function btnHigherClick() {
-    repo.nextCpu.cpuScore > repo.currentCpu.cpuScore ? showResult(true) : showResult(false);
-}
-
-function showResult(isCorrect) {
-    document.getElementById("btnHigher").setAttribute("disabled", "");
-    document.getElementById("btnLower").setAttribute("disabled", "");
-
-    document.getElementById("col2").style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
-    
-    isCorrect ? localStats.incrementScore() : localStats.resetScore();
-    
-    document.getElementById("highScore").innerText = localStats.highScore.toString();
-    document.getElementById("score").innerText = localStats.score.toString();
-
-    countUp();
-}
-
-// updates view based on the cpu objects
-function updateLayout() {
-    document.getElementById("highScore").innerText = localStats.highScore.toString();
-
-    document.getElementById("currentCpuTitle").innerText = repo.currentCpu.name;
-    // add "." to large numbers
-    document.getElementById("currentCpuScore").innerText = new Intl.NumberFormat().format(repo.currentCpu.cpuScore)
-    document.getElementById("nextCpuTitle").innerText = repo.nextCpu.name;
-    
-    document.getElementById("nextCpuScore").innerText = "?";
-
-    document.getElementById("col2").style.backgroundColor = "";
-}
-
-function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-}
-
-async function countUp() {
-    const options = {
-        startVal: repo.nextCpu.cpuScore / 2,
-        separator: '.',
-        decimal: ',',
-        duration: 2
-    };
-    let counter = new CountUp('nextCpuScore', repo.nextCpu.cpuScore, options);
-    if (!counter.error) {
-        counter.start();
-    } else {
-        console.log(counter.error);
+    constructor() {
+        this.#model = new ViewModel();
     }
 
-    await delay(2500)
-    nextRound();
+    async init() {
+        await this.#model.init();
 
-    document.getElementById("btnHigher").removeAttribute("disabled");
-    document.getElementById("btnLower").removeAttribute("disabled");
+        this.#btnLower = document.getElementById("btnLower");
+        this.#btnHigher = document.getElementById("btnHigher");
+        this.#btnScore = document.getElementById("score");
+        this.#btnHighScore = document.getElementById("highScore");
+
+        this.#curCpuTitle = document.getElementById("currentCpuTitle");
+        this.#curCpuScore = document.getElementById("currentCpuScore");
+        this.#nextCpuTitle = document.getElementById("nextCpuTitle");
+        this.#nextCpuScore = document.getElementById("nextCpuScore");
+
+        this.#background = document.getElementById("col2");
+
+        this.#btnLower.onclick = () => this.handleButtonLowerClick();
+        this.#btnHigher.onclick = () => this.handleButtonHigherClick();
+
+        this.updateLayout();
+    }
+
+    updateLayout() {
+        this.#btnHighScore.innerText = this.#model.highScore.toString();
+
+        this.#curCpuTitle.innerText = this.#model.currentCpu.name;
+        // add "." to large numbers
+        this.#curCpuScore.innerText = new Intl.NumberFormat().format(this.#model.currentCpu.cpuScore);
+        this.#nextCpuTitle.innerText = this.#model.nextCpu.name;
+        
+        this.#nextCpuScore.innerText = "?";
+    
+        this.#background.style.backgroundColor = "";
+    }
+
+    handleButtonLowerClick() {
+        let result = this.#model.buttonClicked("lower");
+        this.#showResult(result);
+    }
+
+    handleButtonHigherClick() {
+        let result = this.#model.buttonClicked("higher");
+        this.#showResult(result);
+    }
+
+    #showResult(isCorrect) {
+        this.#btnHigher.setAttribute("disabled", "");
+        this.#btnLower.setAttribute("disabled", "");
+    
+        this.#background.style.backgroundColor = isCorrect ? "lightgreen" : "#FF4444";
+        
+        isCorrect ? this.#model.incrementScore() : this.#model.resetScore();
+        
+        this.#btnHighScore.innerText = this.#model.highScore.toString();
+        this.#btnScore.innerText = this.#model.score.toString();
+    
+        this.#countUp();
+    }
+
+    #delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+    
+    async #countUp() {
+        const options = {
+            startVal: this.#model.nextCpu.cpuScore / 2,
+            separator: '.',
+            decimal: ',',
+            duration: 2
+        };
+        let counter = new CountUp('nextCpuScore', this.#model.nextCpu.cpuScore, options);
+        if (!counter.error) {
+            counter.start();
+        } else {
+            console.log(counter.error);
+        }
+    
+        await this.#delay(2500)
+        this.#model.nextRound();
+    
+        this.#btnHigher.removeAttribute("disabled");
+        this.#btnLower.removeAttribute("disabled");
+
+        this.updateLayout();
+    }
 }
 
-function nextRound() {
-    repo.nextRound();
+class ViewModel {
+    #repo: CpuRepository;
+    #localStats: Stats;
+    
+    constructor() {
+        this.#repo = new CpuRepository();
+        this.#localStats = new Stats("highScore_cpu");
+    }
 
-    updateLayout();
+    async init() {
+        await this.#repo.init();
+    }
+
+    nextRound(): void {
+        this.#repo.nextRound();
+    }
+
+    // "lower" and "higher"
+    buttonClicked(value: string): boolean {
+        if (value == "higher") {
+            return this.#repo.nextCpu.cpuScore > this.#repo.currentCpu.cpuScore;
+        }
+        if (value == "lower") {
+            return this.#repo.nextCpu.cpuScore < this.#repo.currentCpu.cpuScore;
+        }
+        console.log("nothing found for '" + value + "'");
+        return false;
+    }
+
+    incrementScore() {
+        this.#localStats.incrementScore();
+    }
+
+    resetScore() {
+        this.#localStats.resetScore();
+    }
+
+    get currentCpu() {
+        return this.#repo.currentCpu;
+    }
+
+    get nextCpu() {
+        return this.#repo.nextCpu;
+    }
+
+    get highScore() {
+        return this.#localStats.highScore;
+    }
+
+    get score() {
+        return this.#localStats.score;
+    }
+}
+
+export async function main() {
+    const ui = new UI();
+    await ui.init();
 }
