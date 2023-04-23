@@ -1,120 +1,166 @@
+import { CpuRepository } from "./cpuRepository.js";
 import { Stats } from "./statistics.js";
 
-var cpuList;
-var currentCpu;
+type CPU = {
+    name: string;
+    type: string;
+}
 
-var stats: Stats;
+class UI {
+    #model: ViewModel;
+
+    #btnDesktop: HTMLElement;
+    #btnLaptop: HTMLElement;
+    #btnServer: HTMLElement;
+    #btnMobile: HTMLElement;
+
+    #btns: HTMLElement[];
+
+    #cpuName: HTMLElement;
+    #score: HTMLElement;
+    #highScore: HTMLElement;
+    #mainCol: HTMLElement;
+
+    constructor() {
+        this.#model = new ViewModel();
+
+        this.#btnDesktop =  document.getElementById("btnDesktop");
+        this.#btnDesktop.onclick = () => this.btnClick(0);
+        this.#btnLaptop =  document.getElementById("btnLaptop");
+        this.#btnLaptop.onclick = () => this.btnClick(1);
+        this.#btnMobile =  document.getElementById("btnMobile");
+        this.#btnMobile.onclick = () => this.btnClick(2);
+        this.#btnServer =  document.getElementById("btnServer");
+        this.#btnServer.onclick = () => this.btnClick(3);
+
+        this.#btns = [this.#btnDesktop, this.#btnLaptop, this.#btnMobile, this.#btnServer];
+
+        this.#cpuName = document.getElementById("cpuName");
+        this.#score = document.getElementById("score");
+        this.#highScore = document.getElementById("highScore");
+        this.#mainCol = document.getElementById("mainCol");
+    }
+
+    async init() {
+        await this.#model.init();
+
+        this.#nextRound();
+    }
+
+    #updateScores() {
+        this.#score.innerText = this.#model.score.toString();
+        this.#highScore.innerText = this.#model.highScore.toString();
+    }
+
+    async #delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    #nextRound() {
+        this.#model.nextRound();
+
+        this.#cpuName.innerText = this.#model.currentCpu.name;
+
+        this.#mainCol.style.backgroundColor = "";
+    }
+
+    async btnClick(typ) {
+        // 0 -> Desktop
+        // 1 -> Laptop
+        // 2 -> Mobile/Embedded
+        // 3 -> Server
+    
+        this.#btns.forEach((el) => {
+            el.setAttribute("disabled", "");
+        })
+    
+        switch (typ) {
+            case 0:
+                this.#btnDesktop.style.backgroundColor = "#FF4444";
+                break;
+            case 1:
+                this.#btnLaptop.style.backgroundColor = "#FF4444";
+                break;
+            case 2:
+                this.#btnMobile.style.backgroundColor = "#FF4444";
+                break;
+            case 3:
+                this.#btnServer.style.backgroundColor = "#FF4444";
+                break;
+        }
+    
+        const currentType = this.#model.currentCpu.type;
+        if(currentType.includes("Desktop")) {
+            this.#btnDesktop.style.backgroundColor = "lightgreen";
+        } 
+        if(currentType.includes("Laptop")) {
+            this.#btnLaptop.style.backgroundColor = "lightgreen";
+        } 
+        if(currentType.includes("Mobile/Embedded")) {
+            this.#btnMobile.style.backgroundColor = "lightgreen";
+        }
+        if(currentType.includes("Server")) {
+            this.#btnServer.style.backgroundColor = "lightgreen";
+        }
+    
+        // Score
+        if (this.#btns[typ].style.backgroundColor == "lightgreen") {
+            this.#model.incrementScore();
+        } else {
+            this.#model.resetScore();
+        }
+        this.#updateScores();
+    
+        await this.#delay(1000);
+    
+        this.#btns.forEach( (el) => {
+            el.style.backgroundColor = "#3CC3FA";
+            el.removeAttribute("disabled");
+        })
+    
+        this.#nextRound();
+    }
+}
+
+class ViewModel {
+    #repo: CpuRepository;
+    #stats: Stats;
+
+    constructor() {
+        this.#stats = new Stats("highScore_socket");
+        this.#repo = new CpuRepository();
+    }
+
+    async init() {
+        await this.#repo.init();
+    }
+
+    nextRound() {
+        this.#repo.reset();
+    }
+
+    incrementScore() {
+        this.#stats.incrementScore();
+    }
+
+    resetScore() {
+        this.#stats.resetScore();
+    }
+
+    get currentCpu(): CPU {
+        return this.#repo.currentCpu;
+    }
+
+    get score(): number {
+        return this.#stats.score;
+    }
+
+    get highScore(): number {
+        return this.#stats.highScore;
+    }
+}
 
 export async function main() {
-    // init cpu list
-    await (fetch('./data.json')
-        .then((response) => response.json())
-        .then((json) => cpuList = json));
-
-    stats = new Stats("highScore_socket");
-
-    updateScores();
-
-    nextRound();
+    const ui = new UI();
+    await ui.init();
 }
-
-function nextRound() {
-    currentCpu = getRandomCpu();
-
-    document.getElementById("cpuName").innerText = currentCpu.name;
-
-    document.getElementById("mainCol").style.backgroundColor = "";
-}
-
-function getRandomCpu() {
-    let randomIndex;
-    do {
-        randomIndex = getRandomInt(0, cpuList.length)
-    } while (typeof(cpuList[randomIndex]["type"]) == null || cpuList[randomIndex]["type"] == "null" || cpuList[randomIndex]["type"] == null);
-    
-    
-    return {
-        name: cpuList[randomIndex]["name"].split('@')[0],
-        type: cpuList[randomIndex]["type"]
-    }
-}
-
-function delay(time) {
-    return new Promise(resolve => setTimeout(resolve, time));
-}
-
-export async function btnClick(typ) {
-    // 0 -> Desktop
-    // 1 -> Laptop
-    // 2 -> Mobile/Embedded
-    // 3 -> Server
-
-    let btnDesktop =  document.getElementById("btnDesktop");
-    let btnLaptop =  document.getElementById("btnLaptop");
-    let btnMobile =  document.getElementById("btnMobile");
-    let btnServer =  document.getElementById("btnServer");
-
-    let btns = [btnDesktop, btnLaptop, btnMobile, btnServer];
-
-    btns.forEach((el) => {
-        el.setAttribute("disabled", "");
-    })
-
-    switch (typ) {
-        case 0:
-            btnDesktop.style.backgroundColor = "#FF4444";
-            break;
-        case 1:
-            btnLaptop.style.backgroundColor = "#FF4444";
-            break;
-        case 2:
-            btnMobile.style.backgroundColor = "#FF4444";
-            break;
-        case 3:
-            btnServer.style.backgroundColor = "#FF4444";
-            break;
-    }
-
-    if(currentCpu.type.includes("Desktop")) {
-        btnDesktop.style.backgroundColor = "lightgreen";
-    } 
-    if(currentCpu.type.includes("Laptop")) {
-        btnLaptop.style.backgroundColor = "lightgreen";
-    } 
-    if(currentCpu.type.includes("Mobile/Embedded")) {
-        btnMobile.style.backgroundColor = "lightgreen";
-    }
-    if(currentCpu.type.includes("Server")) {
-        btnServer.style.backgroundColor = "lightgreen";
-    }
-
-    // Score
-    if (btns[typ].style.backgroundColor == "lightgreen") {
-        stats.incrementScore();
-    } else {
-        stats.resetScore();
-    }
-    updateScores();
-
-    await delay(1000);
-
-    btns.forEach( (el) => {
-        el.style.backgroundColor = "#3CC3FA";
-        el.removeAttribute("disabled");
-    })
-
-    nextRound();
-}
-
-function updateScores() {
-    document.getElementById("score").innerText = stats.score.toString();
-    document.getElementById("highScore").innerText = stats.highScore.toString();
-}
-
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
-}
-
-main();
