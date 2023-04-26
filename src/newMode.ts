@@ -54,6 +54,52 @@ class ViewModel {
         this.stats.resetScore();
     }
 
+    switchMode() {
+        this.hardmode = !this.hardmode;
+    }
+
+    getDates() {
+        let cpuDate = this.repo.currentCpu.date;
+        // if date is undefined the go for recursion
+        if(cpuDate === undefined) {
+            this.repo.reset();
+            return this.getDates();
+        }
+
+        const dateArray = cpuDate.split("-");
+        const year = Number(dateArray[0]);
+
+        let newDates: string[] = new Array(4);
+
+        if (this.hardmode) {
+            for (let index = 0; index < 4; index++) {
+                newDates[index] = this.getRandomDate(new Date(year - 1), new Date(year + 1));
+            }
+            newDates[this.getRandomInt(0, 4)] = cpuDate;
+            return newDates;
+        }
+
+        // normal Mode
+        for (let index = 0; index < 4; index++) {
+            newDates[index] = this.getRandomDate(new Date("2000-01-01"), new Date(Date.now()));
+        }
+        newDates[this.getRandomInt(0, 4)] = cpuDate;
+        return newDates;
+    }
+
+    private getRandomInt(min, max): number {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
+    }
+    
+    private getRandomDate(startDate: Date, endDate: Date) {
+        const minValue = startDate.getTime();
+        const maxValue = endDate.getTime();
+        const timestamp = Math.floor(Math.random() * (maxValue - minValue + 1) + minValue);
+        return new Date(timestamp).toISOString().split("T")[0];
+    }
+
     get currentCpu() {
         return this.repo.currentCpu;
     }
@@ -67,8 +113,7 @@ class ViewModel {
     }
 
     get Dates(): string[] {
-        let array;
-        return array = ["eins", "zwei", "drei", "vier"];
+        return this.getDates();
     }
 }
 
