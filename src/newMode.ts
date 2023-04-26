@@ -134,7 +134,7 @@ class ViewModel {
 
         if (this.hardmode) {
             for (let index = 0; index < 4; index++) {
-                newDates[index] = this.getRandomDate(new Date(year - 1), new Date(year + 1));
+                newDates[index] = this.getRandomDate(new Date((year - 1) + "-" + "01-01"), new Date((year + 1) + "-" + "01-01"));
             }
             newDates[this.getRandomInt(0, 4)] = cpuDate;
             return newDates;
