@@ -7,6 +7,9 @@ class UI {
     private buttons: HTMLElement[];
     private cpuName: HTMLElement;
 
+    private score: HTMLElement;
+    private highScore: HTMLElement;
+
     constructor() {
         this.model = new ViewModel();
 
@@ -15,17 +18,16 @@ class UI {
         let button3 = document.getElementById("btnDate3");
         let button4 = document.getElementById("btnDate4");
         this.buttons = [button1, button2, button3, button4];
+
+        this.score = document.getElementById("score");
+        this.highScore = document.getElementById("highScore");
     }
 
     async init() {
         await this.model.init();
 
         this.cpuName = document.getElementById("cpuName");
-        this.cpuName.innerText = this.model.currentCpu.name;
-
-        this.model.Dates.forEach((value, index) => 
-            (this.buttons[index].innerText = value)
-        );
+        this.nextRound();
 
         this.buttons.forEach(
             (btn) => {
@@ -35,8 +37,29 @@ class UI {
     }
 
     buttonClick(btn: HTMLElement) {
+        btn.setAttribute("disabled", "");
         let result = this.model.processClick(btn.innerText);
         btn.style.backgroundColor = result ? "lightgreen" : "#FF4444";
+
+        this.updateScores();
+    }
+
+    nextRound() {
+        this.buttons.forEach(
+            (btn) => {btn.removeAttribute("disabled");
+            }
+        )
+
+        this.cpuName.innerText = this.model.currentCpu.name;
+
+        this.model.Dates.forEach((value, index) => 
+            (this.buttons[index].innerText = value)
+        );
+    }
+
+    private updateScores() {
+        this.score.innerText = this.model.score.toString();
+        this.highScore.innerText = this.model.highScore.toString();
     }
 }
 
@@ -61,8 +84,12 @@ class ViewModel {
         this.repo.reset();
     }
 
-    incrementScore() {
-        this.stats.incrementScore();
+    incrementScore(num: number = 1) {
+        this.stats.incrementScore(num);
+    }
+
+    reduceScore() {
+        this.stats.incrementScore(-1);
     }
 
     resetScore() {
@@ -116,7 +143,13 @@ class ViewModel {
     }
 
     processClick(text: string): boolean {
-        return text == this.repo.currentCpu.date;
+        let result = text == this.repo.currentCpu.date;
+        if (result) {
+            this.incrementScore(2);
+        } else {
+            this.reduceScore();
+        }
+        return result;
     }
 
     get currentCpu() {
