@@ -28,6 +28,7 @@ class UI {
 
         this.cpuName = document.getElementById("cpuName");
         this.nextRound();
+        this.updateScores();
 
         this.buttons.forEach(
             (btn) => {
@@ -61,7 +62,6 @@ class UI {
             }
         )
         this.model.nextRound();
-
 
         this.cpuName.innerText = this.model.currentCpu.name;
 
