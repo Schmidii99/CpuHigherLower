@@ -36,19 +36,32 @@ class UI {
         )
     }
 
-    buttonClick(btn: HTMLElement) {
+    async buttonClick(btn: HTMLElement) {
         btn.setAttribute("disabled", "");
         let result = this.model.processClick(btn.innerText);
         btn.style.backgroundColor = result ? "lightgreen" : "#FF4444";
 
         this.updateScores();
+
+        await this.delay(1500);
+
+        if (result) {
+            this.nextRound();
+        }
+    }
+    private async delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
     }
 
     nextRound() {
         this.buttons.forEach(
-            (btn) => {btn.removeAttribute("disabled");
+            (btn) => {
+                btn.removeAttribute("disabled");
+                btn.style.backgroundColor = "#5bc0de";
             }
         )
+        this.model.nextRound();
+
 
         this.cpuName.innerText = this.model.currentCpu.name;
 
