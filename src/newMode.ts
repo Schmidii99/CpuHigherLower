@@ -21,6 +21,8 @@ class UI {
 
         this.score = document.getElementById("score");
         this.highScore = document.getElementById("highScore");
+
+        document.getElementById("modeSwitch").addEventListener("change", (e:Event) => {this.switchMode(); this.nextRound()});
     }
 
     async init() {
@@ -35,6 +37,10 @@ class UI {
                 btn.addEventListener("click", (e:Event) => this.buttonClick(btn));
             }
         )
+    }
+
+    switchMode() {
+        this.model.switchMode();
     }
 
     async buttonClick(btn: HTMLElement) {
