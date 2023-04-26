@@ -5,6 +5,7 @@ class UI {
     private model: ViewModel;
 
     private buttons: HTMLElement[];
+    private cpuName: HTMLElement;
 
     constructor() {
         this.model = new ViewModel();
@@ -19,9 +20,23 @@ class UI {
     async init() {
         await this.model.init();
 
+        this.cpuName = document.getElementById("cpuName");
+        this.cpuName.innerText = this.model.currentCpu.name;
+
         this.model.Dates.forEach((value, index) => 
             (this.buttons[index].innerText = value)
         );
+
+        this.buttons.forEach(
+            (btn) => {
+                btn.addEventListener("click", (e:Event) => this.buttonClick(btn));
+            }
+        )
+    }
+
+    buttonClick(btn: HTMLElement) {
+        let result = this.model.processClick(btn.innerText);
+        btn.style.backgroundColor = result ? "lightgreen" : "#FF4444";
     }
 }
 
@@ -98,6 +113,10 @@ class ViewModel {
         const maxValue = endDate.getTime();
         const timestamp = Math.floor(Math.random() * (maxValue - minValue + 1) + minValue);
         return new Date(timestamp).toISOString().split("T")[0];
+    }
+
+    processClick(text: string): boolean {
+        return text == this.repo.currentCpu.date;
     }
 
     get currentCpu() {
