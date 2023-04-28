@@ -129,6 +129,7 @@ class ViewModel {
 
         const dateArray = cpuDate.split("-");
         const year = Number(dateArray[0]);
+        let currentCpuQuartal = this.getCurrentQuartal(dateArray);
 
         let newDates: string[] = new Array(4);
 
@@ -136,7 +137,12 @@ class ViewModel {
             for (let index = 0; index < 4; index++) {
                 newDates[index] = this.getRandomDate(new Date((year - 1) + "-" + "01-01"), new Date((year + 1) + "-" + "01-01"));
             }
-            newDates[this.getRandomInt(0, 4)] = cpuDate;
+            // check if the cpus quartal was randomly choosen already
+            if (newDates.includes(currentCpuQuartal)) {
+                return newDates;
+            }
+
+            newDates[this.getRandomInt(0, 4)] = currentCpuQuartal;
             return newDates;
         }
 
@@ -144,7 +150,13 @@ class ViewModel {
         for (let index = 0; index < 4; index++) {
             newDates[index] = this.getRandomDate(new Date("2000-01-01"), new Date(Date.now()));
         }
-        newDates[this.getRandomInt(0, 4)] = cpuDate;
+
+        // check if the cpus quartal was randomly choosen already
+        if (newDates.includes(currentCpuQuartal)) {
+            return newDates;
+        }
+
+        newDates[this.getRandomInt(0, 4)] = currentCpuQuartal;
         return newDates;
     }
 
@@ -153,12 +165,16 @@ class ViewModel {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
     }
+
+    private getCurrentQuartal(dateArray) {
+        let quartal = Math.ceil(dateArray[1] % 4);
+        return "Q" + quartal + " " + dateArray[0];
+    }
     
     private getRandomDate(startDate: Date, endDate: Date) {
-        const minValue = startDate.getTime();
-        const maxValue = endDate.getTime();
-        const timestamp = Math.floor(Math.random() * (maxValue - minValue + 1) + minValue);
-        return new Date(timestamp).toISOString().split("T")[0];
+        let newYear = this.getRandomInt(startDate.getFullYear(), endDate.getFullYear() + 1);
+        let quartal = this.getRandomInt(1, 5);
+        return "Q" + quartal + " " + newYear;
     }
 
     processClick(text: string): boolean {
