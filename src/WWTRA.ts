@@ -167,7 +167,8 @@ class ViewModel {
     }
 
     private getCurrentQuartal(dateArray) {
-        let quartal = Math.ceil(dateArray[1] % 4);
+        let quartal = Math.ceil(Number(dateArray[1] / 4));
+        
         return "Q" + quartal + " " + dateArray[0];
     }
     
@@ -178,7 +179,7 @@ class ViewModel {
     }
 
     processClick(text: string): boolean {
-        let result = text == this.repo.currentCpu.date;
+        let result = text == this.getCurrentQuartal(this.currentCpu.date.split("-"));
         if (result) {
             this.incrementScore(2);
         } else {
