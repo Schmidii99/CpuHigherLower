@@ -14,14 +14,24 @@ export class Stats {
     incrementScore(value = 1) {
         this.#score += value;
 
-        if (this.#highScore < this.#score) {
-            this.#highScore = this.#score;
-            localStorage.setItem(this.#highScoreStorageKey, this.#highScore.toString());
-        }
+        this.checkHighScore;
     }
 
     resetScore(): void {
         this.#score = 0;
+    }
+
+    updateScore(value) {
+        this.#score += value;
+
+        this.checkHighScore;
+    }
+
+    private checkHighScore() {
+        if (this.#highScore < this.#score) {
+            this.#highScore = this.#score;
+            localStorage.setItem(this.#highScoreStorageKey, this.#highScore.toString());
+        }
     }
 
     get highScore(): number {

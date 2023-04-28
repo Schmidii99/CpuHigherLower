@@ -108,7 +108,7 @@ class ViewModel {
     }
 
     reduceScore() {
-        this.stats.incrementScore(-1);
+        this.stats.updateScore(-1);
     }
 
     resetScore() {
