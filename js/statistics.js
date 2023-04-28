@@ -23,16 +23,17 @@ export class Stats {
     }
     incrementScore(value = 1) {
         __classPrivateFieldSet(this, _Stats_score, __classPrivateFieldGet(this, _Stats_score, "f") + value, "f");
-        this.checkHighScore;
+        this.checkHighScore();
     }
     resetScore() {
         __classPrivateFieldSet(this, _Stats_score, 0, "f");
     }
     updateScore(value) {
         __classPrivateFieldSet(this, _Stats_score, __classPrivateFieldGet(this, _Stats_score, "f") + value, "f");
-        this.checkHighScore;
+        this.checkHighScore();
     }
     checkHighScore() {
+        console.log("Highscore: " + __classPrivateFieldGet(this, _Stats_highScore, "f") + " | Score: " + __classPrivateFieldGet(this, _Stats_score, "f"));
         if (__classPrivateFieldGet(this, _Stats_highScore, "f") < __classPrivateFieldGet(this, _Stats_score, "f")) {
             __classPrivateFieldSet(this, _Stats_highScore, __classPrivateFieldGet(this, _Stats_score, "f"), "f");
             localStorage.setItem(__classPrivateFieldGet(this, _Stats_highScoreStorageKey, "f"), __classPrivateFieldGet(this, _Stats_highScore, "f").toString());

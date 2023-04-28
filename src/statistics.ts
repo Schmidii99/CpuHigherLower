@@ -14,7 +14,7 @@ export class Stats {
     incrementScore(value = 1) {
         this.#score += value;
 
-        this.checkHighScore;
+        this.checkHighScore();
     }
 
     resetScore(): void {
@@ -24,10 +24,11 @@ export class Stats {
     updateScore(value) {
         this.#score += value;
 
-        this.checkHighScore;
+        this.checkHighScore();
     }
 
     private checkHighScore() {
+        console.log("Highscore: " + this.#highScore + " | Score: " + this.#score)
         if (this.#highScore < this.#score) {
             this.#highScore = this.#score;
             localStorage.setItem(this.#highScoreStorageKey, this.#highScore.toString());
