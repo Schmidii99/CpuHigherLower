@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess the Socket Type</title>
+    <title>The CPU Higher Lower Game</title>
     <link rel="icon" type="image/x" href="imgs/chip.png">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link   href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <link   href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/css/bootstrap-switch-button.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap-switch-button@1.1.0/dist/bootstrap-switch-button.min.js"></script>
 </head>
 <body>
-
     <div>
         <nav class="navbar navbar-expand-sm bg-light navbar-light">
             <div class="container-fluid h4">
@@ -28,50 +29,49 @@
                         <a class="nav-link" href="game.html">Game</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" style="text-decoration: underline;" href="gst.html">GST</a>
+                        <a class="nav-link" href="gst.html">GST</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="WWTRA.html">WWTRA</a>
+                        <a class="nav-link active" style="text-decoration: underline;" href="WWTRA.html">WWTRA</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.html">About</a>
-                    </li>  
+                    </li>    
                 </ul>
               </div>
             </div>
-          </nav>
+        </nav>
     </div>
-
-    <!-- <div class="footer">
-        <a href="https://www.flaticon.com/free-icons/processor" title="processor icons">Processor icons created by kerismaker - Flaticon</a>
-    </div> -->
     <div class="container">
         <div class="row">
             <div class="col text-center mb-3">
-                <span class="h2">Guess the socket-type of the CPU</span>
+                <span class="h2"><span style="color: blue;">W</span>hen <span style="color: blue;">w</span>as <span style="color: blue;">t</span>hat <span style="color: blue;">r</span>eleased <span style="color: blue;">a</span>gain?</span>
                 <br>
                 <span class="h2">Score: </span><span class="h3" id="score" style="color: violet">0</span>
                 <span class="h2" style="margin-left: 10px;">Highscore: </span> <span class="h3" id="highScore" style="color: crimson;">0</span>
+                <br>
+                <br>
+                <input id="modeSwitch" type="checkbox" data-toggle="switchbutton" checked data-onlabel="Normal" data-offlabel="Hard Mode" data-onstyle="primary" data-offstyle="danger">
             </div>
         </div>
         <div class="row align-items-center">
             <div class="col-md-6 offset-md-3 border text-center p-2" id="mainCol">
                 <span class="h2" id="cpuName"></span>
                 <br>
-                <button class="btn btn-lg m-1 mt-2" id="btnDesktop" style="background-color: #3CC3FA;" >Desktop</button>
+                <button class="btn btn-lg m-1 mt-2" id="btnDate1" style="background-color: #3CC3FA;"></button>
                 <br>
-                <button class="btn btn-lg m-1" id="btnServer" style="background-color: #3CC3FA;">Server</button>
+                <button class="btn btn-lg m-1" id="btnDate2" style="background-color: #3CC3FA;"></button>
                 <br>
-                <button class="btn btn-lg m-1" id="btnLaptop" style="background-color: #3CC3FA;">Laptop</button>
+                <button class="btn btn-lg m-1" id="btnDate3" style="background-color: #3CC3FA;"></button>
                 <br>
-                <button class="btn btn-lg m-1" id="btnMobile" style="background-color: #3CC3FA;">Mobile/Embedded</button>
+                <button class="btn btn-lg m-1" id="btnDate4" style="background-color: #3CC3FA;"></button>
                 <br>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import { main } from "./js/gst.js"
+        import { main } from "./js/WWTRA.js"
         main()
     </script>
 </body>
