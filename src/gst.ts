@@ -7,61 +7,61 @@ type CPU = {
 }
 
 class UI {
-    #model: ViewModel;
+    private model: ViewModel;
 
-    #btnDesktop: HTMLElement;
-    #btnLaptop: HTMLElement;
-    #btnServer: HTMLElement;
-    #btnMobile: HTMLElement;
+    private btnDesktop: HTMLElement;
+    private btnLaptop: HTMLElement;
+    private btnServer: HTMLElement;
+    private btnMobile: HTMLElement;
 
-    #btns: HTMLElement[];
+    private btns: HTMLElement[];
 
-    #cpuName: HTMLElement;
-    #score: HTMLElement;
-    #highScore: HTMLElement;
-    #mainCol: HTMLElement;
+    private cpuName: HTMLElement;
+    private score: HTMLElement;
+    private highScore: HTMLElement;
+    private mainCol: HTMLElement;
 
     constructor() {
-        this.#model = new ViewModel();
+        this.model = new ViewModel();
 
-        this.#btnDesktop =  document.getElementById("btnDesktop");
-        this.#btnDesktop.onclick = () => this.btnClick(0);
-        this.#btnLaptop =  document.getElementById("btnLaptop");
-        this.#btnLaptop.onclick = () => this.btnClick(1);
-        this.#btnMobile =  document.getElementById("btnMobile");
-        this.#btnMobile.onclick = () => this.btnClick(2);
-        this.#btnServer =  document.getElementById("btnServer");
-        this.#btnServer.onclick = () => this.btnClick(3);
+        this.btnDesktop =  document.getElementById("btnDesktop");
+        this.btnDesktop.onclick = () => this.btnClick(0);
+        this.btnLaptop =  document.getElementById("btnLaptop");
+        this.btnLaptop.onclick = () => this.btnClick(1);
+        this.btnMobile =  document.getElementById("btnMobile");
+        this.btnMobile.onclick = () => this.btnClick(2);
+        this.btnServer =  document.getElementById("btnServer");
+        this.btnServer.onclick = () => this.btnClick(3);
 
-        this.#btns = [this.#btnDesktop, this.#btnLaptop, this.#btnMobile, this.#btnServer];
+        this.btns = [this.btnDesktop, this.btnLaptop, this.btnMobile, this.btnServer];
 
-        this.#cpuName = document.getElementById("cpuName");
-        this.#score = document.getElementById("score");
-        this.#highScore = document.getElementById("highScore");
-        this.#mainCol = document.getElementById("mainCol");
+        this.cpuName = document.getElementById("cpuName");
+        this.score = document.getElementById("score");
+        this.highScore = document.getElementById("highScore");
+        this.mainCol = document.getElementById("mainCol");
     }
 
     async init() {
-        await this.#model.init();
+        await this.model.init();
 
-        this.#nextRound();
+        this.nextRound();
     }
 
-    #updateScores() {
-        this.#score.innerText = this.#model.score.toString();
-        this.#highScore.innerText = this.#model.highScore.toString();
+    updateScores() {
+        this.score.innerText = this.model.score.toString();
+        this.highScore.innerText = this.model.highScore.toString();
     }
 
-    async #delay(time) {
+    async delay(time) {
         return new Promise(resolve => setTimeout(resolve, time));
     }
 
-    #nextRound() {
-        this.#model.nextRound();
+    nextRound() {
+        this.model.nextRound();
 
-        this.#cpuName.innerText = this.#model.currentCpu.name;
+        this.cpuName.innerText = this.model.currentCpu.name;
 
-        this.#mainCol.style.backgroundColor = "";
+        this.mainCol.style.backgroundColor = "";
     }
 
     async btnClick(typ) {
@@ -70,93 +70,93 @@ class UI {
         // 2 -> Mobile/Embedded
         // 3 -> Server
     
-        this.#btns.forEach((el) => {
+        this.btns.forEach((el) => {
             el.setAttribute("disabled", "");
         })
     
         switch (typ) {
             case 0:
-                this.#btnDesktop.style.backgroundColor = "#FF4444";
+                this.btnDesktop.style.backgroundColor = "FF4444";
                 break;
             case 1:
-                this.#btnLaptop.style.backgroundColor = "#FF4444";
+                this.btnLaptop.style.backgroundColor = "FF4444";
                 break;
             case 2:
-                this.#btnMobile.style.backgroundColor = "#FF4444";
+                this.btnMobile.style.backgroundColor = "FF4444";
                 break;
             case 3:
-                this.#btnServer.style.backgroundColor = "#FF4444";
+                this.btnServer.style.backgroundColor = "FF4444";
                 break;
         }
     
-        const currentType = this.#model.currentCpu.type;
+        const currentType = this.model.currentCpu.type;
         if(currentType.includes("Desktop")) {
-            this.#btnDesktop.style.backgroundColor = "lightgreen";
+            this.btnDesktop.style.backgroundColor = "lightgreen";
         } 
         if(currentType.includes("Laptop")) {
-            this.#btnLaptop.style.backgroundColor = "lightgreen";
+            this.btnLaptop.style.backgroundColor = "lightgreen";
         } 
         if(currentType.includes("Mobile/Embedded")) {
-            this.#btnMobile.style.backgroundColor = "lightgreen";
+            this.btnMobile.style.backgroundColor = "lightgreen";
         }
         if(currentType.includes("Server")) {
-            this.#btnServer.style.backgroundColor = "lightgreen";
+            this.btnServer.style.backgroundColor = "lightgreen";
         }
     
         // Score
-        if (this.#btns[typ].style.backgroundColor == "lightgreen") {
-            this.#model.incrementScore();
+        if (this.btns[typ].style.backgroundColor == "lightgreen") {
+            this.model.incrementScore();
         } else {
-            this.#model.resetScore();
+            this.model.resetScore();
         }
-        this.#updateScores();
+        this.updateScores();
     
-        await this.#delay(1000);
+        await this.delay(1000);
     
-        this.#btns.forEach( (el) => {
-            el.style.backgroundColor = "#3CC3FA";
+        this.btns.forEach( (el) => {
+            el.style.backgroundColor = "3CC3FA";
             el.removeAttribute("disabled");
         })
     
-        this.#nextRound();
+        this.nextRound();
     }
 }
 
 class ViewModel {
-    #repo: CpuRepository;
-    #stats: Stats;
+    private repo: CpuRepository;
+    private stats: Stats;
 
     constructor() {
-        this.#stats = new Stats("highScore_socket");
-        this.#repo = new CpuRepository();
+        this.stats = new Stats("highScore_socket");
+        this.repo = new CpuRepository();
     }
 
     async init() {
-        await this.#repo.init();
+        await this.repo.init();
     }
 
     nextRound() {
-        this.#repo.reset();
+        this.repo.reset();
     }
 
     incrementScore() {
-        this.#stats.incrementScore();
+        this.stats.incrementScore();
     }
 
     resetScore() {
-        this.#stats.resetScore();
+        this.stats.resetScore();
     }
 
     get currentCpu(): CPU {
-        return this.#repo.currentCpu;
+        return this.repo.currentCpu;
     }
 
     get score(): number {
-        return this.#stats.score;
+        return this.stats.score;
     }
 
     get highScore(): number {
-        return this.#stats.highScore;
+        return this.stats.highScore;
     }
 }
 

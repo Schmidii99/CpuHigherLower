@@ -1,46 +1,46 @@
 export class CpuRepository {
-    #cpuList;
+    private cpuList;
 
-    #currentCPU;
-    #nextCPU;
+    private currentCPU;
+    private nextCPU;
 
     async init() {
         const fetchResult = await fetch("../data.json");
-        this.#cpuList = await fetchResult.json();
+        this.cpuList = await fetchResult.json();
 
         this.reset();
     }
 
     get currentCpu() {
-        return this.#currentCPU;
+        return this.currentCPU;
     }
 
     get nextCpu() {
-        return this.#nextCPU;
+        return this.nextCPU;
     }
 
     getRandomCpu() {
         let randomIndex: number;
         do {
-            randomIndex = this.#getRandomInt(0, this.#cpuList.length);
-        } while (this.#cpuList[randomIndex]["value"] == null || this.#cpuList[randomIndex]["type"] == null)
-        this.#cpuList[randomIndex]["name"] = this.#cpuList[randomIndex]["name"].split('@')[0];
-        return this.#cpuList[randomIndex];
+            randomIndex = this.getRandomInt(0, this.cpuList.length);
+        } while (this.cpuList[randomIndex]["value"] == null || this.cpuList[randomIndex]["type"] == null)
+        this.cpuList[randomIndex]["name"] = this.cpuList[randomIndex]["name"].split('@')[0];
+        return this.cpuList[randomIndex];
     }
 
-    #getRandomInt(min, max): number {
+    getRandomInt(min, max): number {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
     }
 
     nextRound(): void {
-        this.#currentCPU = this.#nextCPU
-        this.#nextCPU = this.getRandomCpu();
+        this.currentCPU = this.nextCPU
+        this.nextCPU = this.getRandomCpu();
     }
 
     reset(): void {
-        this.#currentCPU = this.getRandomCpu();
-        this.#nextCPU = this.getRandomCpu();
+        this.currentCPU = this.getRandomCpu();
+        this.nextCPU = this.getRandomCpu();
     }
 }

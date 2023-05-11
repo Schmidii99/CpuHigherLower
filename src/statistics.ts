@@ -1,44 +1,44 @@
 export class Stats {
-    #score: number;
-    #highScore: number;
-    #highScoreStorageKey: string;
+    private _score: number;
+    private _highScore: number;
+    private highScoreStorageKey: string;
 
     constructor(highScoreStorageKey) {
         // used as key for localStorage
-        this.#highScoreStorageKey = highScoreStorageKey;
+        this.highScoreStorageKey = highScoreStorageKey;
 
-        this.#score = 0;
-        this.#highScore = Number(localStorage.getItem(this.#highScoreStorageKey)) ?? 0;
+        this._score = 0;
+        this._highScore = Number(localStorage.getItem(this.highScoreStorageKey)) ?? 0;
     }
 
     incrementScore(value = 1) {
-        this.#score += value;
+        this._score += value;
 
         this.checkHighScore;
     }
 
     resetScore(): void {
-        this.#score = 0;
+        this._score = 0;
     }
 
     updateScore(value) {
-        this.#score += value;
+        this._score += value;
 
         this.checkHighScore;
     }
 
     private checkHighScore() {
-        if (this.#highScore < this.#score) {
-            this.#highScore = this.#score;
-            localStorage.setItem(this.#highScoreStorageKey, this.#highScore.toString());
+        if (this._highScore < this._score) {
+            this._highScore = this._score;
+            localStorage.setItem(this.highScoreStorageKey, this._highScore.toString());
         }
     }
 
     get highScore(): number {
-        return this.#highScore;
+        return this._highScore;
     }
 
     get score(): number {
-        return this.#score;
+        return this._score;
     }
 }
